@@ -23,7 +23,6 @@ About this workshop:
 {{ workshop.workshop_description }}
 {% endif %}
 
-{% comment %} {% if registration.will_attend_physical == False %} {% endcomment %}
 ================================================================================
                         VIRTUAL MEETING LINK
 ================================================================================
@@ -32,8 +31,6 @@ Join the workshop via Google Meet:
 🔗 https://meet.google.com/oxk-evdn-fsi
 
 Please save this link and join on the workshop date and time.
-
-{% comment %} {% endif %} {% endcomment %}
 ================================================================================
                         ADD TO YOUR CALENDAR
 ================================================================================
