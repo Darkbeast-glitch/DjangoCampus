@@ -24,6 +24,14 @@ About this workshop:
 {% endif %}
 
 ================================================================================
+                        VIRTUAL MEETING LINK
+================================================================================
+
+Join the workshop via Google Meet:
+🔗 https://meet.google.com/oxk-evdn-fsi
+
+Please save this link and join on the workshop date and time.
+================================================================================
                         ADD TO YOUR CALENDAR
 ================================================================================
 
@@ -40,8 +48,9 @@ application (Apple Calendar, Outlook, etc.).
 Name: {{ registration.user_name }}
 Email: {{ registration.user_email }}
 {% if registration.phone_number %}Phone: {{ registration.phone_number }}
-{% endif %}Experience Level: {{ registration.django_experience }}
-Attendance Type: {% if registration.will_attend_physical %}Physical{% else %}Virtual{% endif %}
+{% endif %}{% if registration.country %}Country: {{ registration.country }}
+{% endif %}{% if registration.django_experience %}Django Experience: {{ registration.django_experience }}
+{% endif %}Attendance Type: {% if registration.will_attend_physical %}Physical{% else %}Virtual{% endif %}
 
 ================================================================================
 
