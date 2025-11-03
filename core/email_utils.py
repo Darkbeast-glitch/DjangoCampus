@@ -10,6 +10,7 @@ def send_workshop_registration_email(registration):
     """
     Send workshop registration confirmation email with calendar invite
     """
+    print(f"Attempting to send email to: {registration.user_email}")
     workshop = registration.workshop
     
     # Create calendar event
@@ -50,7 +51,7 @@ def send_workshop_registration_email(registration):
     )
     
     c.events.add(e)
-    ics_content = str(c)
+    ics_content = c.serialize()
     
     # Prepare email context
     context = {
@@ -102,24 +103,29 @@ Django Campus Team
         'noreply@djangocampus.com'
     )
     
+    # Use HTML message if available, otherwise use text
+    email_body = html_message if html_message else text_message
+    
     email = EmailMessage(
         subject=f"Registration Confirmed: {workshop.workshop_name}",
-        body=text_message,
+        body=email_body,
         from_email=from_email,
         to=[registration.user_email],
     )
     
-    # Add HTML version if available
+    # Set content type to HTML if we have HTML message
     if html_message:
         email.content_subtype = "html"
-        email.body = html_message
     
     # Attach calendar invite
-    email.attach(
-        filename="workshop_invite.ics",
-        content=ics_content,
-        mimetype="text/calendar"
-    )
+    try:
+        email.attach(
+            filename="workshop_invite.ics",
+            content=ics_content,
+            mimetype="text/calendar"
+        )
+    except Exception as attach_error:
+        print(f"Error attaching calendar: {attach_error}")
     
     # Send email
     try:
@@ -127,6 +133,8 @@ Django Campus Team
         return True
     except Exception as e:
         print(f"Error sending email: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
