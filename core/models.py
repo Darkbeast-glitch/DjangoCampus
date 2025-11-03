@@ -39,18 +39,52 @@ class DjangoExperience(models.TextChoices):
 
 # Model to let users register for workshops
 class WorkshopRegistration(models.Model):
-    workshop = models.ForeignKey(WorkShop, on_delete=models.CASCADE, related_name='registrations', verbose_name="Workshop")
-    user_name = models.CharField(max_length=255, verbose_name="User Name", null=False, blank=False)
-    user_email = models.EmailField(verbose_name="User Email", null=False, blank=False)
-    phone_number = models.CharField(max_length=13, verbose_name="Phone Number", blank=True, null=True)
-    will_attend_physical = models.BooleanField(default=True, verbose_name="Will Attend Physically")
+    workshop = models.ForeignKey(
+        WorkShop,
+        on_delete=models.CASCADE,
+        related_name='registrations',
+        verbose_name="Workshop"
+    )
+    user_name = models.CharField(
+        max_length=255,
+        verbose_name="User Name",
+        null=False,
+        blank=False
+    )
+    user_email = models.EmailField(
+        verbose_name="User Email",
+        null=False,
+        blank=False
+    )
+    phone_number = models.CharField(
+        max_length=13,
+        verbose_name="Phone Number",
+        blank=True,
+        null=True
+    )
+    country = models.CharField(
+        max_length=100,
+        verbose_name="Country",
+        blank=True,
+        null=True,
+        help_text="Participant's country"
+    )
+    will_attend_physical = models.BooleanField(
+        default=True,
+        verbose_name="Will Attend Physically"
+    )
     django_experience = models.CharField(
         max_length=20,
         choices=DjangoExperience.choices,
-        default=DjangoExperience.BEGINNER,
-        verbose_name="Django Experience Level"
+        blank=True,
+        null=True,
+        verbose_name="Django Experience Level",
+        help_text="Optional: Only required for Django-specific workshops"
     )
-    registration_date = models.DateTimeField(auto_now_add=True, verbose_name="Registration Date")
+    registration_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Registration Date"
+    )
     
     class Meta:
         verbose_name = "Workshop Registration"
@@ -67,4 +101,4 @@ class WorkshopRegistration(models.Model):
     
     def get_experience_display(self):
         """Return human-readable experience level"""
-        return self.django_experience
+        return self.django_experience if self.django_experience else "N/A"

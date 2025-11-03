@@ -40,8 +40,9 @@ class WorkshopRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkshopRegistration
         fields = [
-            'id', 'workshop', 'workshop_name', 'workshop_date', 'workshop_time', 'user_name',
-            'user_email', 'phone_number', 'will_attend_physical', 'django_experience',
+            'id', 'workshop', 'workshop_name', 'workshop_date',
+            'workshop_time', 'user_name', 'user_email', 'phone_number',
+            'country', 'will_attend_physical', 'django_experience',
             'registration_date'
         ]
         read_only_fields = [
@@ -78,7 +79,8 @@ class WorkShopListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkShop
         fields = [
-            'id', 'workshop_image_header', 'workshop_name', 'workshop_date', 'workshop_time', 'workshop_description', 'workshop_location',
+            'id', 'workshop_image_header', 'workshop_name', 'workshop_date',
+            'workshop_time', 'workshop_description', 'workshop_location',
             'is_ended', 'registrations_count'
         ]
         read_only_fields = ['id']

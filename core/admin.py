@@ -99,6 +99,7 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
         'user_name',
         'workshop',
         'user_email',
+        'country',
         'registration_date',
         'will_attend_physical',
         'django_experience',
@@ -108,10 +109,12 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
         'user_name',
         'user_email',
         'phone_number',
+        'country',
         'workshop__workshop_name'
     )
     list_filter = (
         'workshop',
+        'country',
         'will_attend_physical',
         'django_experience',
         AttendanceFilter,
@@ -122,10 +125,13 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Participant Information', {
-            'fields': ('user_name', 'user_email', 'phone_number')
+            'fields': ('user_name', 'user_email', 'phone_number', 'country')
         }),
         ('Workshop Details', {
-            'fields': ('workshop', 'django_experience')
+            'fields': ('workshop', 'django_experience'),
+            'description': (
+                'Django experience is optional for non-Django events'
+            )
         }),
         ('Attendance Preference', {
             'fields': ('will_attend_physical',)
@@ -153,23 +159,20 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
     
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
-        field_names = [
-            'user_name', 'user_email', 'phone_number',
-            'workshop__workshop_name', 'workshop__workshop_date',
-            'workshop__workshop_location', 'django_experience',
-            'will_attend_physical', 'registration_date'
-        ]
         
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-            meta.verbose_name_plural.replace(' ', '_').lower()
+        response['Content-Disposition'] = (
+            'attachment; filename={}.csv'.format(
+                meta.verbose_name_plural.replace(' ', '_').lower()
+            )
         )
         writer = csv.writer(response)
         
         # Write header
         header = [
-            'Name', 'Email', 'Phone', 'Workshop', 'Workshop Date',
-            'Location', 'Experience', 'Physical Attendance', 'Registration Date'
+            'Name', 'Email', 'Phone', 'Country', 'Workshop',
+            'Workshop Date', 'Location', 'Experience',
+            'Physical Attendance', 'Registration Date'
         ]
         writer.writerow(header)
         
@@ -179,10 +182,11 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
                 obj.user_name,
                 obj.user_email,
                 obj.phone_number or 'N/A',
+                obj.country or 'N/A',
                 obj.workshop.workshop_name,
                 obj.workshop.workshop_date.strftime('%Y-%m-%d'),
                 obj.workshop.workshop_location,
-                obj.django_experience,
+                obj.django_experience or 'N/A',
                 'Yes' if obj.will_attend_physical else 'No',
                 obj.registration_date.strftime('%Y-%m-%d %H:%M:%S')
             ]
@@ -202,14 +206,16 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
             workshops[workshop_name].append(registration)
         
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=workshop_registrations_by_event.csv'
+        response['Content-Disposition'] = (
+            'attachment; filename=workshop_registrations_by_event.csv'
+        )
         writer = csv.writer(response)
         
         for workshop_name, registrations in workshops.items():
             # Write workshop header
             writer.writerow([f"Workshop: {workshop_name}"])
             writer.writerow([
-                'Name', 'Email', 'Phone', 'Experience',
+                'Name', 'Email', 'Phone', 'Country', 'Experience',
                 'Physical Attendance', 'Registration Date'
             ])
             
@@ -219,7 +225,8 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
                     reg.user_name,
                     reg.user_email,
                     reg.phone_number or 'N/A',
-                    reg.django_experience,
+                    reg.country or 'N/A',
+                    reg.django_experience or 'N/A',
                     'Yes' if reg.will_attend_physical else 'No',
                     reg.registration_date.strftime('%Y-%m-%d %H:%M:%S')
                 ]
@@ -230,4 +237,6 @@ class WorkshopRegistrationAdmin(admin.ModelAdmin):
         
         return response
     
-    export_workshop_specific_csv.short_description = "Export by workshop (grouped CSV)"
+    export_workshop_specific_csv.short_description = (
+        "Export by workshop (grouped CSV)"
+    )
