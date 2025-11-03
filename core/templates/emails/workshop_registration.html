@@ -143,7 +143,6 @@
                 {% endif %}
             </div>
             
-            {% if registration.will_attend_physical == False %}
             <div class="workshop-details" style="background-color: #e3f2fd; border-left-color: #2196F3;">
                 <h3 style="margin-top: 0; color: #1976D2;">🎥 Virtual Meeting Link</h3>
                 <p style="margin: 10px 0;">
@@ -161,7 +160,6 @@
                     Please save this link and join on the workshop date and time.
                 </p>
             </div>
-            {% endif %}
             
             <div class="button-container">
                 <a href="{{ add_to_google_calendar_url }}" class="button" target="_blank">
