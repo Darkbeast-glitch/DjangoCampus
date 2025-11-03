@@ -143,6 +143,26 @@
                 {% endif %}
             </div>
             
+            {% if registration.will_attend_physical == False %}
+            <div class="workshop-details" style="background-color: #e3f2fd; border-left-color: #2196F3;">
+                <h3 style="margin-top: 0; color: #1976D2;">🎥 Virtual Meeting Link</h3>
+                <p style="margin: 10px 0;">
+                    Join the workshop via Google Meet:
+                </p>
+                <div style="text-align: center; margin: 15px 0;">
+                    <a href="https://meet.google.com/oxk-evdn-fsi" 
+                       style="display: inline-block; padding: 12px 24px; background-color: #2196F3; 
+                              color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                        🔗 Join Google Meet
+                    </a>
+                </div>
+                <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                    <strong>Meeting Link:</strong> https://meet.google.com/oxk-evdn-fsi<br>
+                    Please save this link and join on the workshop date and time.
+                </p>
+            </div>
+            {% endif %}
+            
             <div class="button-container">
                 <a href="{{ add_to_google_calendar_url }}" class="button" target="_blank">
                     📅 Add to Google Calendar
@@ -163,7 +183,12 @@
                     {% if registration.phone_number %}
                     <li><strong>Phone:</strong> {{ registration.phone_number }}</li>
                     {% endif %}
-                    <li><strong>Experience Level:</strong> {{ registration.django_experience }}</li>
+                    {% if registration.country %}
+                    <li><strong>Country:</strong> {{ registration.country }}</li>
+                    {% endif %}
+                    {% if registration.django_experience %}
+                    <li><strong>Django Experience:</strong> {{ registration.django_experience }}</li>
+                    {% endif %}
                     <li><strong>Attendance Type:</strong> {% if registration.will_attend_physical %}Physical{% else %}Virtual{% endif %}</li>
                 </ul>
             </div>
