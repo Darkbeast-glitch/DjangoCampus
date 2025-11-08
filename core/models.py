@@ -114,7 +114,7 @@ def send_workshop_notification_to_previous_attendees(sender, instance, created, 
     if created:
         previous_registrations = WorkshopRegistration.objects.filter(
             workshop__workshop_date__lt=instance.workshop_date
-        ).distinct('user_email')
+        ).values_list('user_email', flat=True).distinct()
         
         for registration in previous_registrations:
             # Here you would call your email sending function
