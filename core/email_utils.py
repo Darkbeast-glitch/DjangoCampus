@@ -179,3 +179,61 @@ def generate_google_calendar_link(workshop, registration):
     
     base_url = "https://calendar.google.com/calendar/render"
     return f"{base_url}?{urlencode(params)}"
+
+
+def send_workshop_notification_email(workshop, previous_registrations):
+    """
+    Send notification email to previous attendees about a new workshop
+    """
+    from_email = getattr(
+        settings,
+        'DEFAULT_FROM_EMAIL',
+        'noreply@djangocampus.com'
+    )
+    for registration in previous_registrations:
+        context = {
+            'name': registration.user_name,
+            'workshop': workshop,
+        }
+        
+        try:
+            html_message = render_to_string(
+                'emails/workshop_notification.html',
+                context
+            )
+        except Exception:
+            html_message = None
+        
+        try:
+            text_message = render_to_string(
+                'emails/workshop_notification.txt',
+                context
+            )
+        except Exception:
+            text_message = f"""
+                    New Workshop Announcement!
+                    Hi {registration.user_name},
+                    We are excited to announce a new workshop: {workshop.workshop_name} on {workshop.workshop_date} at {workshop.workshop_location}.
+                    Join us for another great learning experience!
+                    Best regards,
+                    Django Campus Team
+                                """
+                    
+        email = EmailMessage(
+            subject=f"New Workshop: {workshop.workshop_name}",
+            body=text_message,
+            from_email=from_email,
+            to=[registration.user_email],
+        )
+        
+        if html_message:
+            email.content_subtype = "html"
+            email.body = html_message
+        
+        try:
+            email.send()
+        except Exception as e:
+            print(f"Error sending notification email to {registration.user_email}: {e}")
+
+        
+        

@@ -1,0 +1,11 @@
+==============================================================================
+New Workshop Announcement!
+==============================================================================
+
+Hi {registration.user_name},
+We are excited to announce a new workshop: {workshop.workshop_name} on {workshop.workshop_date} 
+at {workshop.workshop_location}.
+Join us for another great learning experience!
+Best regards,
+Django Campus Team
+==============================================================================
